@@ -10,9 +10,7 @@ namespace WebAPI.Data.Repositories
 {
     public class CollectionRepository : ICollectionRepository
     {
-
         private IMongoDatabase Database;
-
 
         public CollectionRepository(IMongoClient client, IOptions<MongoSettings> settings)
         {
@@ -20,8 +18,5 @@ namespace WebAPI.Data.Repositories
         }
 
         public IMongoCollection<T> GetCollection<T>(string collectionName) => Database.GetCollection<T>(collectionName);
-
-
-
     }
 }
