@@ -11,6 +11,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
+using WebAPI.Data.QueryClasses.Interfaces;
+using WebAPI.Data.Settings;
+using WebAPI.Data.Models;
+using WebAPI.Data.QueryClasses;
 
 namespace WebAPI
 {
@@ -27,12 +32,20 @@ namespace WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvcCore().AddApiExplorer();
-        
+
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
             });
+
+            var mongoDbSection = Configuration.GetSection("Connections");
+
+            services.Configure<MongoSettings>(mongoDbSection);
+            services.AddScoped<IMongoClient>(x => new MongoClient(mongoDbSection.GetValue<string>("ConnectionString")));
+            services.AddScoped<IProductQueries, ProductQueries>();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
