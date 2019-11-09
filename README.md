@@ -3,6 +3,9 @@ This is a project for a boiler plate .net Core 3 API with a Mongo DB database th
 
 Mongo DB can be accessed through the `ICollectionRepository` Interface and the `GetCollection<T>` method within that. 
 
+A default Query class and repository have been included for a very basic `Products` collection.
+The same logic used in those could be implemented for any collection to provide basic CRUD functionality.
+
 # Settings
 
 The `app.settings.json` file provided in the repo will provide the correct format and default values for running MongoDb locally. 
