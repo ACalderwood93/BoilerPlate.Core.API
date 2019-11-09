@@ -16,6 +16,8 @@ using WebAPI.Data.QueryClasses.Interfaces;
 using WebAPI.Data.Settings;
 using WebAPI.Data.Models;
 using WebAPI.Data.QueryClasses;
+using WebAPI.Data.Repositories.Interfaces;
+using WebAPI.Data.Repositories;
 
 namespace WebAPI
 {
@@ -44,6 +46,7 @@ namespace WebAPI
             services.Configure<MongoSettings>(mongoDbSection);
             services.AddScoped<IMongoClient>(x => new MongoClient(mongoDbSection.GetValue<string>("ConnectionString")));
             services.AddScoped<IProductQueries, ProductQueries>();
+            services.AddScoped<IProductRepository, ProductRepository>();
 
 
         }
