@@ -8,27 +8,22 @@ using Microsoft.Extensions.Options;
 using WebAPI.Data.Settings;
 using System.Linq;
 using MongoDB.Bson;
+using WebAPI.Data.Repositories.Interfaces;
 
 namespace WebAPI.Data.QueryClasses
 {
     public class ProductQueries : IProductQueries
     {
         const string CollectionName = "Products";
-        private IMongoClient Client { get; }
 
-        private IMongoDatabase Database;
+        private IMongoCollection<Product> Collection;
 
-        private IMongoCollection<Product> ProductCollection;
-
-
-        public ProductQueries(IMongoClient client, IOptions<MongoSettings> settings)
+        public ProductQueries(ICollectionRepository collectionRepo)
         {
-            Client = client;
-            Database = client.GetDatabase(settings.Value.DatabaseName);
-            ProductCollection = Database.GetCollection<Product>(CollectionName);
+            Collection = collectionRepo.GetCollection<Product>(CollectionName);
         }
 
-        public IEnumerable<Product> GetAll() => ProductCollection.AsQueryable();
+        public IEnumerable<Product> GetAll() => Collection.AsQueryable();
 
         public Product GetByName(string name) => GetAll().FirstOrDefault(x => x.ProductName == name);
 

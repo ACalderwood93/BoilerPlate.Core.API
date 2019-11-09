@@ -47,6 +47,7 @@ namespace WebAPI
             services.AddScoped<IMongoClient>(x => new MongoClient(mongoDbSection.GetValue<string>("ConnectionString")));
             services.AddScoped<IProductQueries, ProductQueries>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<ICollectionRepository, CollectionRepository>();
 
 
         }

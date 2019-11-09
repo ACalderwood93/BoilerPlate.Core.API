@@ -15,29 +15,24 @@ namespace WebAPI.Data.Repositories
     {
 
         const string CollectionName = "Products";
-        private IMongoClient Client { get; }
 
-        private IMongoDatabase Database;
-
-        private IMongoCollection<Product> ProductCollection;
+        private IMongoCollection<Product> Collection;
 
 
-        public ProductRepository(IMongoClient client, IOptions<MongoSettings> settings)
+        public ProductRepository(ICollectionRepository collectionRepo)
         {
-            Client = client;
-            Database = client.GetDatabase(settings.Value.DatabaseName);
-            ProductCollection = Database.GetCollection<Product>(CollectionName);
+            Collection = collectionRepo.GetCollection<Product>(CollectionName);
         }
 
         public async Task<Product> Create(Product product)
         {
-            await ProductCollection.InsertOneAsync(product);
+            await Collection.InsertOneAsync(product);
             return product;
         }
 
         public async Task Update(Product product)
         {
-            await ProductCollection.ReplaceOneAsync(x => x._id == product._id, product);
+            await Collection.ReplaceOneAsync(x => x._id == product._id, product);
         }
     }
 }
