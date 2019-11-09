@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebAPI.Data.Models.ViewModels;
 using WebAPI.Data.QueryClasses.Interfaces;
 using WebAPI.Data.Repositories.Interfaces;
+using WebAPI.Services.Interfaces;
 
 namespace WebAPI.Controllers
 {
@@ -14,31 +15,20 @@ namespace WebAPI.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        public IProductQueries Queries { get; }
+        public IProductService Service { get; }
 
-        public IProductRepository Repo { get; }
-        public ProductController(IProductQueries queries, IProductRepository repo)
+        public ProductController(IProductService service)
         {
-            Queries = queries;
-            Repo = repo;
+            Service = service;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            return Ok(Queries.GetAll());
-        }
+        public async Task<IActionResult> GetAll() => Ok(Service.GetAll());
 
         [HttpGet("{name}")]
         public async Task<IActionResult> GetByName(string name)
         {
-
-            if (name.Length < 1)
-            {
-                return BadRequest("Invalid Name");
-            }
-
-            var result = Queries.GetByName(name);
+            var result = Service.GetByName(name);
 
             if (result == null)
             {
@@ -56,19 +46,12 @@ namespace WebAPI.Controllers
 
             if (!ModelState.IsValid)
             {
-                return BadRequest("Invalid product");
+                return BadRequest(ModelState);
             }
 
             try
             {
-                var newProduct = new Data.Models.Product()
-                {
-                    ProductName = product.ProductName
-                };
-
-                return Ok(await Repo.Create(newProduct));
-
-
+                return Ok(await Service.Create(product));
             }
             catch (Exception e)
             {

@@ -18,6 +18,8 @@ using WebAPI.Data.Models;
 using WebAPI.Data.QueryClasses;
 using WebAPI.Data.Repositories.Interfaces;
 using WebAPI.Data.Repositories;
+using WebAPI.Services.Interfaces;
+using WebAPI.Services;
 
 namespace WebAPI
 {
@@ -48,6 +50,7 @@ namespace WebAPI
             services.AddScoped<IProductQueries, ProductQueries>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ICollectionRepository, CollectionRepository>();
+            services.AddScoped<IProductService, ProductService>();
 
 
         }
