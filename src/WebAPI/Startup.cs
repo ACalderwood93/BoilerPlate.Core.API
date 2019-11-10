@@ -20,6 +20,9 @@ using WebAPI.Data.Repositories.Interfaces;
 using WebAPI.Data.Repositories;
 using WebAPI.Services.Interfaces;
 using WebAPI.Services;
+using AutoMapper;
+using WebAPI.Data.Models.ViewModels;
+using WebAPI.Configs;
 
 namespace WebAPI
 {
@@ -51,6 +54,7 @@ namespace WebAPI
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ICollectionRepository, CollectionRepository>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IMapper>(x => new Mapper(AutoMapperConfig.GetConfiguration()));
 
 
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,11 +15,13 @@ namespace WebAPI.Services
     {
         public IProductRepository Repo { get; }
         public IProductQueries Query { get; }
+        public IMapper Mapper { get; }
 
-        public ProductService(IProductRepository repo, IProductQueries query)
+        public ProductService(IProductRepository repo, IProductQueries query, IMapper mapper)
         {
             Repo = repo;
             Query = query;
+            Mapper = mapper;
         }
 
         public IEnumerable<Product> GetAll() => Query.GetAll();
@@ -40,12 +43,7 @@ namespace WebAPI.Services
 
         public async Task Update(VmProduct model)
         {
-            var product = new Product
-            {
-                ProductName = model.ProductName,
-                _id = model._id
-            };
-
+            var product = Mapper.Map<Product>(model);
             await Repo.Update(product);
 
         }
