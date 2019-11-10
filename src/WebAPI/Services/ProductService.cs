@@ -32,11 +32,7 @@ namespace WebAPI.Services
 
         public async Task<Product> Create(VmProduct model)
         {
-            var product = new Product
-            {
-                ProductName = model.ProductName
-            };
-
+            var product = Mapper.Map<Product>(model);
             return await Repo.Create(product);
         }
 
