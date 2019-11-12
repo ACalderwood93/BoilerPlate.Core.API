@@ -5,8 +5,8 @@ using System.Text;
 
 namespace WebAPI.Data.Repositories.Interfaces
 {
-    public interface ICollectionRepository
+    public interface ICollectionRepository<T>
     {
-        IMongoCollection<T> GetCollection<T>(string collectionName);
+        IMongoCollection<T> GetCollection();
     }
 }

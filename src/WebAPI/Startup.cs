@@ -23,6 +23,9 @@ using WebAPI.Services;
 using AutoMapper;
 using WebAPI.Data.Models.ViewModels;
 using WebAPI.Configs;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace WebAPI
 {
@@ -44,17 +47,44 @@ namespace WebAPI
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+
             });
 
             var mongoDbSection = Configuration.GetSection("Connections");
+            var appSettingsSection = Configuration.GetSection("AppSettings");
 
             services.Configure<MongoSettings>(mongoDbSection);
+            services.Configure<AppSettings>(appSettingsSection);
             services.AddScoped<IMongoClient>(x => new MongoClient(mongoDbSection.GetValue<string>("ConnectionString")));
             services.AddScoped<IProductQueries, ProductQueries>();
             services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped<ICollectionRepository, CollectionRepository>();
+            services.AddScoped(typeof(ICollectionRepository<>), typeof(CollectionRepository<>));
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IMapper>(x => new Mapper(AutoMapperConfig.GetConfiguration()));
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserQueries, UserQueries>();
+
+
+            // configure jwt authentication
+            var appSettings = appSettingsSection.Get<AppSettings>();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
 
 
         }

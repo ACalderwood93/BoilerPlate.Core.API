@@ -14,13 +14,11 @@ namespace WebAPI.Data.QueryClasses
 {
     public class ProductQueries : IProductQueries
     {
-        const string CollectionName = "Products";
-
         private IMongoCollection<Product> Collection;
 
-        public ProductQueries(ICollectionRepository collectionRepo)
+        public ProductQueries(ICollectionRepository<Product> collectionRepo)
         {
-            Collection = collectionRepo.GetCollection<Product>(CollectionName);
+            Collection = collectionRepo.GetCollection();
         }
 
         public IEnumerable<Product> GetAll() => Collection.AsQueryable();
@@ -28,5 +26,6 @@ namespace WebAPI.Data.QueryClasses
         public Product GetByName(string name) => GetAll().FirstOrDefault(x => x.ProductName == name);
 
         public Product GetById(ObjectId id) => GetAll().FirstOrDefault(x => x._id == id);
+        public Product GetById(string id) => GetById(ObjectId.Parse(id));
     }
 }

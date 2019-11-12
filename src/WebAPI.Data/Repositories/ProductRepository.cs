@@ -19,9 +19,9 @@ namespace WebAPI.Data.Repositories
         private IMongoCollection<Product> Collection;
 
 
-        public ProductRepository(ICollectionRepository collectionRepo)
+        public ProductRepository(ICollectionRepository<Product> collectionRepo)
         {
-            Collection = collectionRepo.GetCollection<Product>(CollectionName);
+            Collection = collectionRepo.GetCollection();
         }
 
         public async Task<Product> Create(Product product)

@@ -1,14 +1,14 @@
 ﻿using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using WebAPI.Data.Models;
 using WebAPI.Data.Repositories.Interfaces;
 using WebAPI.Data.Settings;
+using WebAPI.Helpers.Attributes;
+using WebAPI.Helpers;
 
 namespace WebAPI.Data.Repositories
 {
-    public class CollectionRepository : ICollectionRepository
+    public class CollectionRepository<T> : ICollectionRepository<T>
     {
         private IMongoDatabase Database;
 
@@ -17,6 +17,12 @@ namespace WebAPI.Data.Repositories
             Database = client.GetDatabase(settings.Value.DatabaseName);
         }
 
-        public IMongoCollection<T> GetCollection<T>(string collectionName) => Database.GetCollection<T>(collectionName);
+        private string GetCollectionName()
+        {
+            var attrib = Helpers.Helpers.GetAttribute<CollectionName, T>();
+            return attrib.Name;
+        }
+
+        public IMongoCollection<T> GetCollection() => Database.GetCollection<T>(GetCollectionName());
     }
 }
